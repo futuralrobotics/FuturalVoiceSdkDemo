@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/common_dialog_bg">
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_24" />
+
+    <TextView
+        android:id="@+id/dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_10"
+        android:layout_marginVertical="@dimen/margin_10"
+        android:gravity="center"
+        android:text=""
+        android:textSize="@dimen/text_size_24" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/margin_10"
+        android:layout_marginBottom="@dimen/margin_30"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/dialog_btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/w_h_142"
+            android:gravity="center"
+            android:background="@drawable/btn_green_selector"
+            android:text="@android:string/cancel"
+            android:textColor="@color/white"
+            android:paddingVertical="@dimen/padding_12"
+            android:paddingHorizontal="@dimen/padding_16"
+            android:textSize="@dimen/text_size_24" />
+
+        <TextView
+            android:id="@+id/dialog_btn_sure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/w_h_142"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/margin_30"
+            android:background="@drawable/btn_i_know_selector"
+            android:textColor="@color/white"
+            android:paddingVertical="@dimen/padding_12"
+            android:paddingHorizontal="@dimen/padding_16"
+            android:text="@android:string/ok"
+            android:textSize="@dimen/text_size_24" />
+    </LinearLayout>
+</LinearLayout>

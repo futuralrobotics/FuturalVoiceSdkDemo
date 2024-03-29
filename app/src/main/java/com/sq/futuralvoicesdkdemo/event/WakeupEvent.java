@@ -1,4 +1,4 @@
-package com.jack.newvoice.event;
+package com.sq.futuralvoicesdkdemo.event;
 
 public class WakeupEvent {
     public boolean method;//true是用户点击唤醒；false是语音唤醒
