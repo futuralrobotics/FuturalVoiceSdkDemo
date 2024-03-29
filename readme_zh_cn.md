@@ -3,89 +3,34 @@
 ### SDK使用说明
 1. 导入aar文件及依赖的项目
    ![](./images/01.png)
-2. 添加应用权限、App子类、网络配置及导入服务
+2. 添加应用权限、App子类、网络配置
    ![](./images/02.png)
 ---
 ### API使用说明
-机器人整机启动成功后，app启动MonitorService时，MonitorService会与下位机通信，并发出FuturalConstants.ROS_READY广播，表示机器人整机处于ready状态
-1. 电量信息 -- 机器人启动成功后，如下api可以获得当前电量百分比
+机器人整机启动成功后，表示机器人整机处于ready状态
+1. 唤醒通知 -- 对着机器人上的麦克风说“小晴，小晴”，系统会发出如下广播，app监听此广播即可，收到广播时，可以获得麦克风的角度信息
 ```
-   FuturalUtils.getPowerLevel()
+    <receiver
+        android:name=".receivers.WakeupReceiver"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="com.jack.wakeup" />
+        </intent-filter>
+    </receiver>
 ```
-2. 充电状态 -- 机器人启动成功后，如下api可以获得机器人是否在充电
+2. 监听语音输入 -- 调用如下代码，并设置回调函数，在回调函数中会得到文本信息
 ```
-   FuturalUtils.isCharging() true说明机器人正在充电
+    XunFeiIATMgr.getInstance().init(getApplicationContext());
+    XunFeiIATMgr.getInstance().setIatCallback(this);
 ```
-3. 急停状态 -- 机器人启动成功后，如下api可以获得急停状态
+3. 获得语义 -- 调用如下代码来获得语义，在回调函数中会得到语义信息
 ```
-   FuturalUtils.getEmergence() true说明急停键被按下
+    AIUIMgr.getInstance().init(getApplicationContext());
+    AIUIMgr.getInstance().setNlpResultCallBack(this);
 ```
-4. 刹车状态 -- 机器人启动成功后，如下api可以获得刹车状态
+4. TTS使用 -- 调用如下代码来初始化TTS，之后就可以使用了
 ```
-   FuturalUtils.getBrake() true说明刹车键被按下
+   TTSManager.getInstance().init(getApplicationContext(), TTSManager.TTS_TYPE_XUNFEI, "");
 ```
-5. 定位质量 -- 机器人启动成功后，如下api可以获得定位质量，返回int类型数据，范围0-100，值越大说明定位越准确，当值小于50时，导航去某个点位时，出错的概率就越大
-```
-   FuturalUtils.getLocalizationQuality()
-```
-6. 获得当前地图的点位信息
-```
-   String jsonStr = FuturalUtils.getCurrentMapPointsInfo()
-   List<PoisBean> positions = JSON.parseObject(jsonStr, new TypeReference<List<PoisBean>>() {});
-```
-7. 通过坐标导航去某个点位
-```
-   private ActionResultBean actionResultBean;
-   private FuturalAPIUtils.ActionCallBack actionCallBack = new SlamAPIUtils.ActionCallBack() {
-       @Override
-       public void onResponse(ActionResultBean bean) {
-           actionResultBean = bean;//保存越来，查询导航状态时使用
-       }
 
-       @Override
-       public void onFailure() {
-       }
-   };
-
-   PoisBean.PoseBean poseBean = new PoisBean.PoseBean();
-   poseBean.setX(oriX);
-   poseBean.setY(oriY);
-   poseBean.setYaw(theta);
-   FuturalAPIUtils.createMoveToAction(actionCallBack, poseBean);
-```
-8. 查询导航状态
-```
-   FuturalAPIUtils.checkAction((new SlamAPIUtils.ActionCallBack() {
-       @Override
-       public void onResponse(ActionResultBean bean) {
-           Log.e(TAG, "checkAction, " + bean);
-           if (isCanceling || handler.getActivity().isDestroyed()) return;
-
-           //某些情况下，action id会被底盘重置，导致check ation时一直返回404，机器人就会停止在某点上，不动了，这种情况下重新导航去某点
-           if (bean.getAction_id() == -404) {
-               //请再调用一次导航去某个点的api
-           } else if (bean != null && bean.getState().getStatus() == 4 && bean.getState().getResult() == 0) {
-               Log.d(TAG, "arrived point");
-           } else {
-               //如果没有到达指定地点，请再一次检查
-           }
-       }
-       @Override
-       public void onFailure() {
-       }
-   }), actionResultBean.getAction_id());
-```
-9. 取消导航
-```
-   FuturalAPIUtils.cancelCurrentAction(new FuturalAPIUtils.ActionCallBack() {
-       @Override
-       public void onResponse(ActionResultBean bean) {
-           Log.e(TAG, "cancelNav");
-       }
-
-       @Override
-       public void onFailure() {
-       }
-   });
-   简单的调用FuturalAPIUtils.cancelCurrentAction(null);
-```
+详细信息，请参考源码
